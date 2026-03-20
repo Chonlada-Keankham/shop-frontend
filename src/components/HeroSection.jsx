@@ -6,7 +6,9 @@ function HeroSection() {
       <div className="container">
         <h1 className="hero-title">Cactus House</h1>
         <p className="hero-subtitle">
-          คัดสรรต้นสวย ดูแลง่าย พร้อมจัดส่งถึงบ้าน
+          คัดสรรแคคตัสสวย ดูแลง่าย
+          <br />
+          พร้อมจัดส่งถึงบ้านในสไตล์ที่เรียบง่ายและอบอุ่น
         </p>
 
         <div className="d-flex justify-content-center gap-3 flex-wrap">

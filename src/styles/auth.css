@@ -1,0 +1,132 @@
+.auth-page {
+  padding-top: 120px;
+  padding-bottom: 70px;
+  min-height: 100vh;
+}
+
+.auth-wrapper {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.auth-card .card-body {
+  padding: 38px 34px;
+}
+
+.auth-brand-badge {
+  display: inline-block;
+  background: #edf6ef;
+  color: var(--color-primary);
+  border: 1px solid #d8eadc;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.auth-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.auth-subtitle {
+  color: var(--color-muted);
+  font-family: "Prompt", sans-serif;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.auth-label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.auth-input,
+.auth-textarea {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  box-shadow: none !important;
+  transition: 0.25s ease;
+}
+
+.auth-input:focus,
+.auth-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.18rem rgba(53, 94, 59, 0.12) !important;
+}
+
+.auth-submit-btn {
+  border-radius: 14px;
+  font-weight: 700;
+  padding: 12px 18px;
+}
+
+.auth-footer-text {
+  color: var(--color-muted);
+  text-align: center;
+  margin-top: 22px;
+  margin-bottom: 0;
+}
+
+.auth-footer-text a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.auth-side-note {
+  background: linear-gradient(135deg, #edf6ef, #f8fbf8);
+  border: 1px solid #dce8de;
+  border-radius: 20px;
+  padding: 28px 26px;
+  height: 100%;
+}
+
+.auth-side-note-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.auth-side-note p {
+  color: var(--color-text);
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+
+.auth-feature-list {
+  margin-top: 18px;
+  padding-left: 18px;
+}
+
+.auth-feature-list li {
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .auth-title {
+    font-size: 2rem;
+  }
+
+  .auth-card .card-body {
+    padding: 28px 22px;
+  }
+}

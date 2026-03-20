@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { loginUser } from "../api/authApi";
+import "../styles/auth.css";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -41,49 +42,72 @@ function LoginPage() {
     <>
       <Navbar />
 
-      <div className="container" style={{ paddingTop: "120px", minHeight: "100vh" }}>
-        <div className="row justify-content-center">
-          <div className="col-lg-5">
-            <div className="card shadow-sm border-0 rounded-4">
-              <div className="card-body p-4 p-lg-5">
-                <h2 className="mb-2 text-center fw-bold">เข้าสู่ระบบ</h2>
-                <p className="text-center text-muted mb-4">
-                  เข้าสู่ระบบเพื่อเพิ่มสินค้าเข้าตะกร้าและสั่งซื้อ
+      <div className="container auth-page">
+        <div className="auth-wrapper">
+          <div className="row justify-content-center align-items-stretch w-100 g-4">
+            <div className="col-lg-5">
+              <div className="auth-card h-100">
+                <div className="card-body">
+                  <span className="auth-brand-badge">Welcome back</span>
+                  <h1 className="auth-title">เข้าสู่ระบบ</h1>
+                  <p className="auth-subtitle">
+                    เข้าสู่ระบบเพื่อเพิ่มสินค้าเข้าตะกร้า ตรวจสอบคำสั่งซื้อ
+                    และใช้งาน Cactus House ได้อย่างเต็มรูปแบบ
+                  </p>
+
+                  <form onSubmit={handleLogin}>
+                    <div className="mb-3">
+                      <label className="form-label auth-label">อีเมล</label>
+                      <input
+                        type="email"
+                        className="form-control auth-input"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="กรอกอีเมล"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label auth-label">รหัสผ่าน</label>
+                      <input
+                        type="password"
+                        className="form-control auth-input"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="กรอกรหัสผ่าน"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="btn btn-success w-100 auth-submit-btn mt-2"
+                    >
+                      เข้าสู่ระบบ
+                    </button>
+                  </form>
+
+                  <p className="auth-footer-text">
+                    ยังไม่มีบัญชี? <Link to="/register">สมัครสมาชิก</Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-5">
+              <div className="auth-side-note h-100">
+                <div className="auth-side-note-title">Cactus House</div>
+                <p>
+                  ร้านขายแคคตัสและไม้อวบน้ำออนไลน์ที่ออกแบบมาให้เรียบง่าย
+                  ใช้งานสะดวก และช่วยให้ลูกค้าสั่งซื้อสินค้าได้อย่างรวดเร็ว
                 </p>
 
-                <form onSubmit={handleLogin}>
-                  <div className="mb-3">
-                    <label className="form-label">อีเมล</label>
-                    <input
-                      type="email"
-                      className="form-control form-control-lg"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="กรอกอีเมล"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">รหัสผ่าน</label>
-                    <input
-                      type="password"
-                      className="form-control form-control-lg"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="กรอกรหัสผ่าน"
-                    />
-                  </div>
-
-                  <button type="submit" className="btn btn-success w-100 btn-lg mt-2">
-                    เข้าสู่ระบบ
-                  </button>
-                </form>
-
-                <p className="text-center mt-4 mb-0">
-                  ยังไม่มีบัญชี? <Link to="/register">สมัครสมาชิก</Link>
-                </p>
+                <ul className="auth-feature-list">
+                  <li>เพิ่มสินค้าเข้าตะกร้าได้ทันทีหลังเข้าสู่ระบบ</li>
+                  <li>ตรวจสอบประวัติคำสั่งซื้อย้อนหลังได้</li>
+                  <li>ดูรายละเอียดคำสั่งซื้อและยอดชำระได้ครบถ้วน</li>
+                </ul>
               </div>
             </div>
           </div>

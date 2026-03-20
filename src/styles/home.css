@@ -1,8 +1,13 @@
 .section-title {
-  font-weight: bold;
-  color: #355e3b;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
 }
 
 .featured-section {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
+  padding-top: 80px;
+  padding-bottom: 80px;
 }

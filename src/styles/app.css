@@ -1,7 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #355e3b;
+  --color-primary-dark: #2e5233;
+  --color-primary-light: #dceee0;
+  --color-bg: #f6f8f6;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-border: #d9e2dc;
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --radius-lg: 18px;
+  --radius-md: 14px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: 'Prompt', sans-serif;
-  background-color: #f6f8f6;
-  color: #1f2937;
+  font-family: "Prompt", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+.hero-title,
+.section-title,
+.brand-text {
+  font-family: "Playfair Display", serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.table,
+.form-control,
+.form-label,
+.btn,
+p,
+span,
+small,
+li,
+td,
+th {
+  font-family: "Prompt", sans-serif;
 }

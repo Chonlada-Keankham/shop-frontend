@@ -5,18 +5,22 @@
 }
 
 .cart-title {
-  color: #355e3b;
-  font-weight: bold;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 24px;
 }
 
 .empty-cart-box {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
   padding: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--color-border);
 }
 
 .cart-summary-card {
-  border: none;
-  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }

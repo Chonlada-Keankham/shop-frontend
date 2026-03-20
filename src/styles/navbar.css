@@ -1,13 +1,13 @@
 .cactus-navbar {
-  background-color: #355e3b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  background-color: var(--color-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   padding-top: 12px;
   padding-bottom: 12px;
 }
 
 .cactus-navbar.scrolled {
-  background-color: #2e5233;
+  background-color: var(--color-primary-dark);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
@@ -24,15 +24,18 @@
 
 .brand-text {
   color: #ffffff;
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  line-height: 1;
 }
 
 .cactus-navbar .nav-link,
 .nav-btn-link {
   color: #ffffff !important;
+  font-family: "Prompt", sans-serif;
   font-weight: 600;
+  font-size: 1rem;
   text-decoration: none;
   transition: 0.25s;
 }
@@ -56,12 +59,14 @@
 
 .nav-register-btn {
   border-radius: 10px;
+  font-family: "Prompt", sans-serif;
   font-weight: 700;
   padding: 6px 14px;
 }
 
 .nav-user-text {
   color: #f2f7f2;
+  font-family: "Prompt", sans-serif;
   font-weight: 600;
   padding: 8px 12px;
   display: inline-block;

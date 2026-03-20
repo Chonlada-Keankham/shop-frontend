@@ -1,12 +1,15 @@
 .cactus-card {
-  border: none;
-  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
   overflow: hidden;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: var(--shadow-soft);
+  background: #ffffff;
 }
 
 .cactus-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
 }
 
 .cactus-image {
@@ -16,7 +19,20 @@
 
 .no-image-box {
   height: 250px;
-  background-color: #e9ecef;
-  color: #6c757d;
+  background-color: #eef3ef;
+  color: var(--color-muted);
   font-weight: 600;
+  font-family: "Prompt", sans-serif;
+}
+
+.cactus-card .card-title {
+  font-family: "Playfair Display", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.cactus-card .card-text {
+  font-family: "Prompt", sans-serif;
+  color: var(--color-text);
 }

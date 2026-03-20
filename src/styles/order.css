@@ -1,0 +1,168 @@
+.order-page {
+  padding-top: 120px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+.order-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.order-page-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.order-page-subtitle {
+  color: var(--color-muted);
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-family: "Prompt", sans-serif;
+}
+
+.order-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.order-card .card-body {
+  padding: 28px;
+}
+
+.order-section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+.order-table {
+  margin-bottom: 0;
+}
+
+.order-table thead th {
+  background-color: #dce9df;
+  color: var(--color-text);
+  font-weight: 700;
+  border-color: #c9d7cc;
+  vertical-align: middle;
+}
+
+.order-table tbody td {
+  vertical-align: middle;
+}
+
+.order-summary-box {
+  background: #f2f7f2;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.order-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-family: "Prompt", sans-serif;
+}
+
+.order-summary-row.total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: "Prompt", sans-serif;
+}
+
+.status-pending {
+  background: #fff4cc;
+  color: #8a6d1d;
+}
+
+.status-completed {
+  background: #d9f5df;
+  color: #1f6b35;
+}
+
+.status-cancelled {
+  background: #fde2e1;
+  color: #a12828;
+}
+
+.order-meta-label {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.order-meta-value {
+  color: var(--color-text);
+}
+
+.empty-order-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.order-header-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.store-info-box {
+  background: #f7faf7;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+
+.store-info-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+
+.order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 16px 28px;
+}
+
+@media (max-width: 768px) {
+  .order-page-title {
+    font-size: 2.3rem;
+  }
+
+  .order-section-title {
+    font-size: 1.45rem;
+  }
+
+  .order-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
