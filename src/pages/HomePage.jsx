@@ -12,6 +12,8 @@ import WhyChooseUs from "../components/WhyChooseUs";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import "../styles/home.css";
+import { useNavigate } from "react-router-dom";
+import { getUser, isLoggedIn } from "../utils/auth";
 
 function HomePage() {
   const [products, setProducts] = useState([]);
@@ -32,28 +34,34 @@ function HomePage() {
     }
   };
 
-  const handleAddToCart = async (product) => {
-    try {
-      const userId = 1; // ชั่วคราวก่อน เดี๋ยวค่อยเปลี่ยนเป็นค่าจาก login
-
-      let cartId;
-
-      try {
-        const cartRes = await getActiveCartByUser(userId);
-        cartId = cartRes.data.data.id;
-      } catch (error) {
-        const newCartRes = await createCart(userId);
-        cartId = newCartRes.data.data.id;
-      }
-
-      await addItemToCart(cartId, product.id, 1);
-
-      alert(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
-    } catch (error) {
-      console.error("Add to cart failed:", error);
-      alert("ไม่สามารถเพิ่มสินค้าเข้าตะกร้าได้");
+const handleAddToCart = async (product) => {
+  try {
+    if (!isLoggedIn()) {
+      alert("กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าเข้าตะกร้า");
+      navigate("/login");
+      return;
     }
-  };
+
+    const user = getUser();
+    const userId = user.id;
+
+    let cartId;
+
+    try {
+      const cartRes = await getActiveCartByUser(userId);
+      cartId = cartRes.data.data.id;
+    } catch (error) {
+      const newCartRes = await createCart(userId);
+      cartId = newCartRes.data.data.id;
+    }
+
+    await addItemToCart(cartId, product.id, 1);
+    alert(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
+  } catch (error) {
+    console.error("Add to cart failed:", error);
+    alert("ไม่สามารถเพิ่มสินค้าเข้าตะกร้าได้");
+  }
+};
 
   return (
     <>

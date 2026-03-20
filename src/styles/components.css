@@ -1,0 +1,56 @@
+.btn-brand {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.btn-brand:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #fff;
+}
+
+.btn-brand-outline {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 12px;
+  font-weight: 600;
+  background: #fff;
+}
+
+.btn-brand-outline:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.input-brand,
+.select-brand,
+.textarea-brand {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fff4cc;
+  color: #8a6d1d;
+}
+
+.status-completed {
+  background: #d9f5df;
+  color: #1f6b35;
+}
+
+.status-cancelled {
+  background: #fde2e1;
+  color: #a12828;
+}

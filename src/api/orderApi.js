@@ -15,3 +15,11 @@ export const updateOrderStatus = async (orderId, status) => {
 export const getOrdersByUserId = async (userId) => {
   return await api.get(`/orders/user/${userId}`);
 };
+
+export const getOrderById = async (orderId) => {
+  return await api.get(`/orders/${orderId}`);
+};
+
+export const getOrderItemsByOrderId = async (orderId) => {
+  return await api.get(`/order-items/order/${orderId}`);
+};

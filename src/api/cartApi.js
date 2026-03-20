@@ -35,3 +35,9 @@ export const deleteCartItem = async (cartItemId) => {
 export const getCartTotalByCartId = async (cartId) => {
   return await api.get(`/cart-items/cart/${cartId}/total`);
 };
+
+export const updateCartStatus = async (cartId, status) => {
+  return await api.put(`/carts/${cartId}/status`, {
+    status,
+  });
+};

@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap');
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+  font-family: 'Prompt', sans-serif;
+  background-color: #f6f8f6;
+  color: #1f2937;
 }

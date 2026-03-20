@@ -1,18 +1,68 @@
 .cactus-navbar {
   background-color: #355e3b;
-  border: 2px solid white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   transition: all 0.3s ease;
-}
-
-.cactus-navbar .nav-link {
-  transition: 0.3s;
-}
-
-.cactus-navbar .nav-link:hover {
-  color: #d4edda !important;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .cactus-navbar.scrolled {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   background-color: #2e5233;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand-icon {
+  font-size: 1.5rem;
+}
+
+.brand-text {
+  color: #ffffff;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.cactus-navbar .nav-link,
+.nav-btn-link {
+  color: #ffffff !important;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+.cactus-navbar .nav-link:hover,
+.nav-btn-link:hover {
+  color: #dceee0 !important;
+}
+
+.nav-btn-link {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+.active-nav {
+  color: #dceee0 !important;
+}
+
+.nav-register-btn {
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 6px 14px;
+}
+
+.nav-user-text {
+  color: #f2f7f2;
+  font-weight: 600;
+  padding: 8px 12px;
+  display: inline-block;
 }
