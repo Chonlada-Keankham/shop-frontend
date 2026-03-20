@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/navbar.css";
 
 function Navbar() {
@@ -10,10 +11,7 @@ function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -23,9 +21,9 @@ function Navbar() {
       }`}
     >
       <div className="container">
-        <a className="navbar-brand text-white fw-bold" href="#">
+        <Link className="navbar-brand text-white fw-bold" to="/">
           🌵 Cactus House
-        </a>
+        </Link>
 
         <button
           className="navbar-toggler bg-white"
@@ -42,19 +40,19 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">หน้าแรก</a>
+              <Link className="nav-link text-white" to="/">
+                หน้าแรก
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">สินค้า</a>
+              <a className="nav-link text-white" href="#products">
+                สินค้า
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">เกี่ยวกับ</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-white" href="#">ติดต่อ</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-white" href="#">🛒</a>
+              <Link className="nav-link text-white" to="/cart">
+                🛒 ตะกร้า
+              </Link>
             </li>
           </ul>
         </div>

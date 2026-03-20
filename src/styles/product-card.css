@@ -1,17 +1,22 @@
-.hero-section {
-  min-height: 80vh;
-  background: linear-gradient(rgba(53, 94, 59, 0.7), rgba(53, 94, 59, 0.7)),
-    url("https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=1200")
-      center/cover no-repeat;
-  color: white;
+.cactus-card {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-.hero-title {
-  font-size: 4rem;
-  font-weight: bold;
+.cactus-card:hover {
+  transform: translateY(-5px);
 }
 
-.hero-subtitle {
-  font-size: 1.25rem;
-  margin-top: 20px;
+.cactus-image {
+  height: 250px;
+  object-fit: cover;
+}
+
+.no-image-box {
+  height: 250px;
+  background-color: #e9ecef;
+  color: #6c757d;
+  font-weight: 600;
 }

@@ -1,3 +1,11 @@
+import { useEffect, useState } from "react";
+import api from "../api/axios";
+import {
+  getActiveCartByUser,
+  createCart,
+  addItemToCart,
+} from "../api/cartApi";
+
 import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
 import WhyChooseUs from "../components/WhyChooseUs";
@@ -6,29 +14,46 @@ import ProductCard from "../components/ProductCard";
 import "../styles/home.css";
 
 function HomePage() {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Astrophytum",
-      price: 250,
-      stock: 12,
-      image: "/img/Astrophytum.jpg",
-    },
-    {
-      id: 2,
-      name: "Mammillaria",
-      price: 180,
-      stock: 18,
-      image: "/img/Mammillaria.png",
-    },
-    {
-      id: 3,
-      name: "Gymnocalycium",
-      price: 220,
-      stock: 10,
-      image: "/img/Gymnocalycium.png",
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get("/products");
+      setProducts(Array.isArray(res.data) ? res.data : res.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async (product) => {
+    try {
+      const userId = 1; // ชั่วคราวก่อน เดี๋ยวค่อยเปลี่ยนเป็นค่าจาก login
+
+      let cartId;
+
+      try {
+        const cartRes = await getActiveCartByUser(userId);
+        cartId = cartRes.data.data.id;
+      } catch (error) {
+        const newCartRes = await createCart(userId);
+        cartId = newCartRes.data.data.id;
+      }
+
+      await addItemToCart(cartId, product.id, 1);
+
+      alert(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      alert("ไม่สามารถเพิ่มสินค้าเข้าตะกร้าได้");
+    }
+  };
 
   return (
     <>
@@ -37,12 +62,23 @@ function HomePage() {
 
       <section className="featured-section py-5">
         <div className="container">
-          <h2 className="section-title text-center mb-4">แคคตัสยอดนิยม</h2>
-          <div className="row">
-            {featuredProducts.map((item) => (
-              <ProductCard key={item.id} item={item} />
-            ))}
-          </div>
+          <h2 className="section-title text-center mb-4">สินค้าทั้งหมด</h2>
+
+          {loading ? (
+            <p className="text-center">กำลังโหลดสินค้า...</p>
+          ) : products.length === 0 ? (
+            <p className="text-center">ยังไม่มีสินค้าในระบบ</p>
+          ) : (
+            <div className="row">
+              {products.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
