@@ -1,0 +1,14 @@
+.hero-section {
+  background: linear-gradient(rgba(53,94,59,0.7), rgba(53,94,59,0.7)),
+    url("/img/background.jpg") center/cover no-repeat !important;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-top: 20px;
+}

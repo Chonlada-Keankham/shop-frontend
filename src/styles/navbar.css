@@ -1,0 +1,18 @@
+.cactus-navbar {
+  background-color: #355e3b;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+}
+
+.cactus-navbar .nav-link {
+  transition: 0.3s;
+}
+
+.cactus-navbar .nav-link:hover {
+  color: #d4edda !important;
+}
+
+.cactus-navbar.scrolled {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: #2e5233;
+}
