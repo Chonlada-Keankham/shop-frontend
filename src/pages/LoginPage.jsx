@@ -29,12 +29,11 @@ function LoginPage() {
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
+      window.dispatchEvent(new Event("authChanged"));
 
-      alert("เข้าสู่ระบบสำเร็จ");
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
-      alert(error.response?.data?.message || "เข้าสู่ระบบไม่สำเร็จ");
     }
   };
 

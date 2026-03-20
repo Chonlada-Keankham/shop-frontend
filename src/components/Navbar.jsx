@@ -1,48 +1,37 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../styles/navbar.css";
-import { getUser, isLoggedIn, logout } from "../utils/auth";
+import { isLoggedIn, logout } from "../utils/auth";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
   const navigate = useNavigate();
   const location = useLocation();
-
-  const user = getUser();
-  const loggedIn = isLoggedIn();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
 
+    const syncAuthState = () => {
+      setLoggedIn(isLoggedIn());
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("authChanged", syncAuthState);
+    window.addEventListener("storage", syncAuthState);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("authChanged", syncAuthState);
+      window.removeEventListener("storage", syncAuthState);
+    };
   }, []);
-
-  const handleCartClick = () => {
-    if (!loggedIn) {
-      alert("กรุณาเข้าสู่ระบบก่อนเข้าตะกร้า");
-      navigate("/login");
-      return;
-    }
-
-    navigate("/cart");
-  };
-
-  const handleOrdersClick = () => {
-    if (!loggedIn) {
-      alert("กรุณาเข้าสู่ระบบก่อนดูประวัติคำสั่งซื้อ");
-      navigate("/login");
-      return;
-    }
-
-    navigate("/orders");
-  };
 
   const handleLogout = () => {
     logout();
-    alert("ออกจากระบบเรียบร้อยแล้ว");
+    window.dispatchEvent(new Event("authChanged"));
     navigate("/");
   };
 
@@ -72,65 +61,61 @@ function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-            <li className="nav-item">
-              <Link
-                className={`nav-link ${location.pathname === "/" ? "active-nav" : ""}`}
-                to="/"
-              >
-                หน้าแรก
-              </Link>
-            </li>
+            {loggedIn && (
+              <>
+                <li className="nav-item">
+                  <button
+                    type="button"
+                    className="nav-link btn btn-link nav-btn-link"
+                    onClick={() => navigate("/cart")}
+                  >
+                    🛒 ตะกร้า
+                  </button>
+                </li>
 
-            <li className="nav-item">
-              <button
-                type="button"
-                className="nav-link btn btn-link nav-btn-link"
-                onClick={handleCartClick}
-              >
-                🛒 ตะกร้า
-              </button>
-            </li>
-
-            <li className="nav-item">
-              <button
-                type="button"
-                className="nav-link btn btn-link nav-btn-link"
-                onClick={handleOrdersClick}
-              >
-                คำสั่งซื้อ
-              </button>
-            </li>
+                <li className="nav-item">
+                  <button
+                    type="button"
+                    className="nav-link btn btn-link nav-btn-link"
+                    onClick={() => navigate("/orders")}
+                  >
+                    คำสั่งซื้อ
+                  </button>
+                </li>
+              </>
+            )}
 
             {!loggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">
+                  <Link
+                    className={`nav-link ${
+                      location.pathname === "/login" ? "active-nav" : ""
+                    }`}
+                    to="/login"
+                  >
                     เข้าสู่ระบบ
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="btn btn-light btn-sm nav-register-btn" to="/register">
+                  <Link
+                    className="btn btn-light btn-sm nav-register-btn"
+                    to="/register"
+                  >
                     สมัครสมาชิก
                   </Link>
                 </li>
               </>
             ) : (
-              <>
-                <li className="nav-item">
-                  <span className="nav-user-text">
-                    {user?.name ? `สวัสดี, ${user.name}` : "ผู้ใช้งาน"}
-                  </span>
-                </li>
-                <li className="nav-item">
-                  <button
-                    type="button"
-                    className="btn btn-outline-light btn-sm"
-                    onClick={handleLogout}
-                  >
-                    ออกจากระบบ
-                  </button>
-                </li>
-              </>
+              <li className="nav-item">
+                <button
+                  type="button"
+                  className="btn btn-outline-light btn-sm"
+                  onClick={handleLogout}
+                >
+                  ออกจากระบบ
+                </button>
+              </li>
             )}
           </ul>
         </div>

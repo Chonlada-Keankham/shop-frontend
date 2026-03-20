@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
@@ -10,6 +10,7 @@ import {
   getCartTotalByCartId,
 } from "../api/cartApi";
 import "../styles/cart.css";
+import { getUser, isLoggedIn } from "../utils/auth";
 
 function CartPage() {
   const [cartId, setCartId] = useState(null);
@@ -17,38 +18,52 @@ function CartPage() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const userId = 1;
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate("/login");
+      return;
+    }
+
     fetchCartData();
   }, []);
 
-const fetchCartData = async () => {
-  try {
-    setLoading(true);
+  const fetchCartData = async () => {
+    try {
+      setLoading(true);
 
-    const cartRes = await getActiveCartByUser(userId);
-    const activeCartId = cartRes.data.data.id;
+      const user = getUser();
 
-    setCartId(activeCartId);
+      if (!user || !user.id) {
+        navigate("/login");
+        return;
+      }
 
-    const itemsRes = await getCartItemsByCartId(activeCartId);
-    setCartItems(itemsRes.data.data || []);
+      const userId = user.id;
 
-    const totalRes = await getCartTotalByCartId(activeCartId);
-    setTotalPrice(Number(totalRes.data.data?.total_price || 0));
-  } catch (error) {
-    if (error.response?.status === 404) {
-      setCartItems([]);
-      setTotalPrice(0);
-      setCartId(null);
-    } else {
-      console.error("Failed to fetch cart:", error);
+      const cartRes = await getActiveCartByUser(userId);
+      const activeCartId = cartRes.data.data.id;
+
+      setCartId(activeCartId);
+
+      const itemsRes = await getCartItemsByCartId(activeCartId);
+      setCartItems(itemsRes.data.data || []);
+
+      const totalRes = await getCartTotalByCartId(activeCartId);
+      setTotalPrice(Number(totalRes.data.data?.total_price || 0));
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setCartItems([]);
+        setTotalPrice(0);
+        setCartId(null);
+      } else {
+        console.error("Failed to fetch cart:", error);
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleIncrease = async (item) => {
     try {
@@ -56,7 +71,6 @@ const fetchCartData = async () => {
       fetchCartData();
     } catch (error) {
       console.error("Failed to increase quantity:", error);
-      alert("ไม่สามารถเพิ่มจำนวนสินค้าได้");
     }
   };
 
@@ -71,7 +85,6 @@ const fetchCartData = async () => {
       fetchCartData();
     } catch (error) {
       console.error("Failed to decrease quantity:", error);
-      alert("ไม่สามารถลดจำนวนสินค้าได้");
     }
   };
 
@@ -81,7 +94,6 @@ const fetchCartData = async () => {
       fetchCartData();
     } catch (error) {
       console.error("Failed to delete cart item:", error);
-      alert("ไม่สามารถลบสินค้าได้");
     }
   };
 

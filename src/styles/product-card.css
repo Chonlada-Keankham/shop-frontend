@@ -1,3 +1,27 @@
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background: #f8f6ee;
+  padding: 16px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cactus-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.35s ease;
+}
+
+.cactus-card:hover .cactus-image {
+  transform: scale(1.03);
+}
+
 .cactus-card {
   border: 1px solid var(--color-border);
   border-radius: 18px;
@@ -10,19 +34,6 @@
 .cactus-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
-}
-
-.cactus-image {
-  height: 250px;
-  object-fit: cover;
-}
-
-.no-image-box {
-  height: 250px;
-  background-color: #eef3ef;
-  color: var(--color-muted);
-  font-weight: 600;
-  font-family: "Prompt", sans-serif;
 }
 
 .cactus-card .card-title {

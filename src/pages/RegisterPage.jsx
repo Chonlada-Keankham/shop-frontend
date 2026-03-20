@@ -29,11 +29,9 @@ function RegisterPage() {
 
     try {
       await registerUser(formData);
-      alert("สมัครสมาชิกสำเร็จ");
       navigate("/login");
     } catch (error) {
       console.error("Register failed:", error);
-      alert(error.response?.data?.message || "สมัครสมาชิกไม่สำเร็จ");
     }
   };
 

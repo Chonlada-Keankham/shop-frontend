@@ -11,11 +11,11 @@ import {
 } from "../api/cartApi";
 import { createOrder, createOrderItem } from "../api/orderApi";
 import "../styles/checkout.css";
+import { getUser, isLoggedIn } from "../utils/auth";
 
 function CheckoutPage() {
   const navigate = useNavigate();
 
-  const userId = 1;
   const [cartId, setCartId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -28,6 +28,11 @@ function CheckoutPage() {
   });
 
   useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate("/login");
+      return;
+    }
+
     fetchCheckoutData();
   }, []);
 
@@ -35,7 +40,14 @@ function CheckoutPage() {
     try {
       setLoading(true);
 
-      const cartRes = await getActiveCartByUser(userId);
+      const user = getUser();
+
+      if (!user || !user.id) {
+        navigate("/login");
+        return;
+      }
+
+      const cartRes = await getActiveCartByUser(user.id);
       const activeCartId = cartRes.data.data.id;
       setCartId(activeCartId);
 
@@ -44,11 +56,21 @@ function CheckoutPage() {
 
       const totalRes = await getCartTotalByCartId(activeCartId);
       setTotalPrice(Number(totalRes.data.data?.total_price || 0));
+
+      setFormData((prev) => ({
+        ...prev,
+        customer_name: user.name || "",
+        customer_address: user.address || "",
+        customer_phone: user.phone || "",
+      }));
     } catch (error) {
-      console.error("Failed to fetch checkout data:", error);
-      setCartItems([]);
-      setTotalPrice(0);
-      setCartId(null);
+      if (error.response?.status === 404) {
+        setCartItems([]);
+        setTotalPrice(0);
+        setCartId(null);
+      } else {
+        console.error("Failed to fetch checkout data:", error);
+      }
     } finally {
       setLoading(false);
     }
@@ -74,16 +96,21 @@ function CheckoutPage() {
       !formData.customer_address ||
       !formData.customer_phone
     ) {
-      alert("กรุณากรอกข้อมูลให้ครบ");
       return;
     }
 
     if (!cartId || cartItems.length === 0) {
-      alert("ไม่มีสินค้าในตะกร้า");
       return;
     }
 
     try {
+      const user = getUser();
+
+      if (!user || !user.id) {
+        navigate("/login");
+        return;
+      }
+
       const subtotal = totalPrice;
       const discount = 0;
       const vat = Number((subtotal * 0.07).toFixed(2));
@@ -91,7 +118,7 @@ function CheckoutPage() {
 
       const orderRes = await createOrder({
         order_code: generateOrderCode(),
-        user_id: userId,
+        user_id: user.id,
         customer_name: formData.customer_name,
         customer_address: formData.customer_address,
         customer_phone: formData.customer_phone,
@@ -121,14 +148,11 @@ function CheckoutPage() {
 
       await updateCartStatus(cartId, "checked_out");
 
-      alert("สั่งซื้อเรียบร้อยแล้ว");
       navigate("/orders");
     } catch (error) {
       console.error("Checkout failed:", error);
       console.error("Response data:", error.response?.data);
       console.error("Status:", error.response?.status);
-
-      alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการสั่งซื้อ");
     }
   };
 
@@ -233,9 +257,7 @@ function CheckoutPage() {
                     </div>
                     <div className="d-flex justify-content-between fw-bold fs-5 mt-3">
                       <span>ยอดสุทธิ</span>
-                      <span>
-                        {(totalPrice + totalPrice * 0.07).toFixed(2)} บาท
-                      </span>
+                      <span>{(totalPrice + totalPrice * 0.07).toFixed(2)} บาท</span>
                     </div>
                   </div>
                 </div>

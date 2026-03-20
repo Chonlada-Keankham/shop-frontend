@@ -6,27 +6,27 @@ function ProductCard({ item, onAddToCart }) {
   return (
     <div className="col-md-4 mb-4">
       <div className="card h-100 shadow-sm cactus-card">
-        {item.image ? (
+        <div className="image-wrapper">
           <img
             src={item.image}
             className="card-img-top cactus-image"
             alt={item.name}
           />
-        ) : (
-          <div className="no-image-box d-flex align-items-center justify-content-center">
-            ไม่มีรูปสินค้า
-          </div>
-        )}
+        </div>
 
         <div className="card-body text-center">
           <h5 className="card-title fw-bold">{item.name}</h5>
-          <p className="card-text mb-1">ราคา: {item.price} บาท</p>
-          <p className="card-text mb-3">คงเหลือ: {item.stock}</p>
+
+          <p className="card-text mb-3">
+            ราคา: {Number(item.price).toFixed(2)} บาท
+          </p>
+
           <button
-            className="btn btn-success"
+            className={`btn ${item.stock === 0 ? "btn-secondary" : "btn-success"}`}
+            disabled={item.stock === 0}
             onClick={() => onAddToCart(item)}
           >
-            เพิ่มลงตะกร้า
+            {item.stock === 0 ? "สินค้าหมด" : "เพิ่มลงตะกร้า"}
           </button>
         </div>
       </div>
