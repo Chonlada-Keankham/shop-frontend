@@ -1,49 +1,38 @@
-import api from "./axios";
+import axios from "./axios";
 
-export const createCart = async (userId) => {
-  return await api.post("/carts", {
-    user_id: userId,
-  });
-};
-
-export const addItemToCart = async (cartId, productId, quantity = 1) => {
-  return await api.post("/cart-items", {
-    cart_id: cartId,
-    product_id: productId,
-    quantity,
-  });
-};
-
-export const getCartItemsByCartId = async (cartId) => {
-  return await api.get(`/cart-items/cart/${cartId}`);
-};
-
-export const updateCartItemQuantity = async (cartItemId, quantity) => {
-  return await api.put(`/cart-items/${cartItemId}`, {
-    quantity,
-  });
-};
-
-export const deleteCartItem = async (cartItemId) => {
-  return await api.delete(`/cart-items/${cartItemId}`);
-};
-
-export const getCartTotalByCartId = async (cartId) => {
-  return await api.get(`/cart-items/cart/${cartId}/total`);
-};
-
-export const updateCartStatus = async (cartId, status) => {
-  return await api.put(`/carts/${cartId}/status`, {
-    status,
-  });
-};
-
-export const getActiveCart = () => {
+const getAuthHeader = () => {
   const token = localStorage.getItem("token");
-
-  return axios.get("/carts/user/active", {
+  return {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });
-}
+  };
+};
+
+export const getActiveCart = () => {
+  return axios.get("/carts/user/active", getAuthHeader());
+};
+
+export const addItemToCart = (product_id, quantity = 1) => {
+  return axios.post(
+    "/cart-items",
+    { product_id, quantity },
+    getAuthHeader()
+  );
+};
+
+export const getCartItemsByCartId = (cartId) => {
+  return axios.get(`/cart-items/cart/${cartId}`, getAuthHeader());
+};
+
+export const updateCartItemQuantity = (id, quantity) => {
+  return axios.put(`/cart-items/${id}`, { quantity }, getAuthHeader());
+};
+
+export const deleteCartItem = (id) => {
+  return axios.delete(`/cart-items/${id}`, getAuthHeader());
+};
+
+export const getCartTotalByCartId = (cartId) => {
+  return axios.get(`/cart-items/cart/${cartId}/total`, getAuthHeader());
+};

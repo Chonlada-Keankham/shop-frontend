@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import {
-  getActiveCartByUser,
+  getActiveCart,
   createCart,
   addItemToCart,
 } from "../api/cartApi";
@@ -44,27 +44,25 @@ function HomePage() {
       const user = getUser();
 
       if (!user || !user.id) {
-        console.error("User data invalid:", user);
         navigate("/login");
         return;
       }
 
-      const userId = user.id;
       let cartId;
 
       try {
-        const cartRes = await getActiveCartByUser(userId);
+        const cartRes = await getActiveCart();
         cartId = cartRes.data.data.id;
       } catch (error) {
         if (error.response?.status === 404) {
-          const newCartRes = await createCart(userId);
+          const newCartRes = await createCart();
           cartId = newCartRes.data.data.id;
         } else {
           throw error;
         }
       }
 
-      await addItemToCart(cartId, product.id, 1);
+      await addItemToCart(product.id, 1);
       console.log(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
     } catch (error) {
       console.error(

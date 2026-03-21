@@ -35,6 +35,17 @@ function App() {
           <Route path="products" element={<AdminProductsPage />} />
         </Route>
       </Routes>
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout />
+          </AdminProtectedRoute>
+        }
+      >
+        <Route path="products" element={<AdminProductsPage />} />
+      </Route>
     </BrowserRouter>
   );
 }

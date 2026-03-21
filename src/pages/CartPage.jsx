@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
-  getActiveCartByUser,
+  getActiveCart,
   getCartItemsByCartId,
   updateCartItemQuantity,
   deleteCartItem,
@@ -40,8 +40,7 @@ function CartPage() {
         return;
       }
 
-      const userId = user.id;
-
+      // ✅ ใช้ token-based API
       const cartRes = await getActiveCart();
       const activeCartId = cartRes.data.data.id;
 
@@ -170,10 +169,12 @@ function CartPage() {
               <div className="card shadow-sm cart-summary-card">
                 <div className="card-body">
                   <h4 className="mb-3">สรุปคำสั่งซื้อ</h4>
+
                   <div className="d-flex justify-content-between mb-2">
                     <span>จำนวนสินค้า</span>
                     <span>{cartItems.length} รายการ</span>
                   </div>
+
                   <div className="d-flex justify-content-between fw-bold fs-5">
                     <span>ยอดรวม</span>
                     <span>{totalPrice} บาท</span>

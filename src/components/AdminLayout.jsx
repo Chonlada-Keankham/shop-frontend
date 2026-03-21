@@ -1,48 +1,43 @@
-import { Link, useNavigate, Outlet } from "react-router-dom";
-import { logout, getUser } from "../utils/auth";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 function AdminLayout() {
   const navigate = useNavigate();
-  const user = getUser();
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.dispatchEvent(new Event("authChanged"));
     navigate("/admin/login");
   };
 
   return (
-    <div className="d-flex" style={{ minHeight: "100vh", background: "#f6f8f6" }}>
+    <div className="d-flex min-vh-100">
       <aside
-        style={{
-          width: "260px",
-          background: "#355e3b",
-          color: "#fff",
-          padding: "24px 18px",
-        }}
+        className="bg-dark text-white p-3"
+        style={{ width: "260px", minHeight: "100vh" }}
       >
-        <h2 style={{ fontFamily: "Playfair Display, serif", fontWeight: 700 }}>
-          Admin Panel
-        </h2>
-        <p style={{ opacity: 0.9, marginBottom: "24px" }}>
-          {user?.name || "Administrator"}
-        </p>
+        <h4 className="mb-4">Admin Dashboard</h4>
 
-        <nav className="d-flex flex-column gap-2">
-          <Link className="btn btn-light text-start" to="/admin/products">
+        <div className="mb-3">
+          <div className="small text-secondary">Signed in as</div>
+          <div className="fw-bold">{user?.name || "Admin"}</div>
+        </div>
+
+        <nav className="nav flex-column gap-2">
+          <Link className="btn btn-outline-light text-start" to="/admin/products">
             จัดการสินค้า
           </Link>
         </nav>
 
-        <button
-          className="btn btn-outline-light mt-4 w-100"
-          onClick={handleLogout}
-        >
+        <hr className="border-secondary my-4" />
+
+        <button className="btn btn-danger w-100" onClick={handleLogout}>
           ออกจากระบบ
         </button>
       </aside>
 
-      <main style={{ flex: 1, padding: "32px" }}>
+      <main className="flex-grow-1 bg-light p-4">
         <Outlet />
       </main>
     </div>
