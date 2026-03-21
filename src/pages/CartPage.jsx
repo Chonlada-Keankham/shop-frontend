@@ -42,7 +42,7 @@ function CartPage() {
 
       const userId = user.id;
 
-      const cartRes = await getActiveCartByUser(userId);
+      const cartRes = await getActiveCart();
       const activeCartId = cartRes.data.data.id;
 
       setCartId(activeCartId);

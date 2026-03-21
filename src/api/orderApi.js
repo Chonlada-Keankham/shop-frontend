@@ -23,3 +23,17 @@ export const getOrderById = async (orderId) => {
 export const getOrderItemsByOrderId = async (orderId) => {
   return await api.get(`/order-items/order/${orderId}`);
 };
+
+export const checkout = () => {
+  const token = localStorage.getItem("token");
+
+  return axios.post(
+    "/orders/checkout",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}; 

@@ -1,9 +1,5 @@
 import api from "./axios";
 
-export const getActiveCartByUser = async (userId) => {
-  return await api.get(`/carts/user/${userId}/active`);
-};
-
 export const createCart = async (userId) => {
   return await api.post("/carts", {
     user_id: userId,
@@ -41,3 +37,13 @@ export const updateCartStatus = async (cartId, status) => {
     status,
   });
 };
+
+export const getActiveCart = () => {
+  const token = localStorage.getItem("token");
+
+  return axios.get("/carts/user/active", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
