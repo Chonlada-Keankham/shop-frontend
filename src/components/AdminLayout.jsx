@@ -1,15 +1,31 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function AdminLayout() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.dispatchEvent(new Event("authChanged"));
-    navigate("/admin/login");
-  };
+const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: "ออกจากระบบ",
+    text: "คุณต้องการออกจากระบบใช่หรือไม่?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "ออก",
+    cancelButtonText: "ยกเลิก",
+    confirmButtonColor: "#dc3545",
+    cancelButtonColor: "#6c757d",
+  });
+
+  if (!result.isConfirmed) return;
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.dispatchEvent(new Event("authChanged"));
+
+  navigate("/");
+};
 
   return (
     <div className="d-flex min-vh-100">
