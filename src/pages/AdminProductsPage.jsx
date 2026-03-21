@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   getAllProducts,
   createProduct,
@@ -9,6 +10,7 @@ import {
 function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,8 +36,8 @@ function AdminProductsPage() {
 
       setProducts(productList);
     } catch (error) {
-      console.error("Failed to fetch products:", error);
-      setProducts([]);
+      console.error(error);
+      toast.error("โหลดสินค้าไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
@@ -53,6 +55,7 @@ function AdminProductsPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -67,19 +70,20 @@ function AdminProductsPage() {
       stock: product.stock || "",
       image: product.image || "",
     });
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm("ต้องการลบสินค้านี้ใช่หรือไม่?");
-    if (!confirmed) return;
+    if (!window.confirm("ต้องการลบสินค้านี้ใช่หรือไม่?")) return;
 
     try {
       await deleteProduct(id);
-      await fetchProducts();
+      toast.success("ลบสินค้าเรียบร้อยแล้ว");
+      fetchProducts();
     } catch (error) {
-      console.error("Failed to delete product:", error);
-      alert("ลบสินค้าไม่สำเร็จ");
+      console.error(error);
+      toast.error("ลบสินค้าไม่สำเร็จ");
     }
   };
 
@@ -87,7 +91,12 @@ function AdminProductsPage() {
     e.preventDefault();
 
     if (!formData.name || formData.price === "" || formData.stock === "") {
-      alert("กรุณากรอกชื่อสินค้า ราคา และสต๊อก");
+      toast.warning("กรุณากรอกข้อมูลให้ครบ");
+      return;
+    }
+
+    if (Number(formData.price) < 0 || Number(formData.stock) < 0) {
+      toast.warning("ราคาและสต๊อกต้องไม่ติดลบ");
       return;
     }
 
@@ -99,97 +108,108 @@ function AdminProductsPage() {
     };
 
     try {
+      setSubmitting(true);
+
       if (editingId) {
         await updateProduct(editingId, payload);
+        toast.success("แก้ไขสินค้าเรียบร้อยแล้ว");
       } else {
         await createProduct(payload);
+        toast.success("เพิ่มสินค้าเรียบร้อยแล้ว");
       }
 
       resetForm();
-      await fetchProducts();
+      fetchProducts();
     } catch (error) {
-      console.error("Failed to save product:", error);
-      alert("บันทึกสินค้าไม่สำเร็จ");
+      console.error(error);
+      toast.error("บันทึกสินค้าไม่สำเร็จ");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <div className="container-fluid">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 className="mb-1">จัดการสินค้า</h2>
-          <p className="text-muted mb-0">
-            เพิ่ม แก้ไข และลบข้อมูลสินค้าจากระบบหลังบ้าน
-          </p>
-        </div>
-      </div>
+      <h2 className="mb-3">จัดการสินค้า</h2>
 
-      <div className="card shadow-sm border-0 mb-4">
+      {/* FORM */}
+      <div className="card mb-4">
         <div className="card-body">
-          <h4 className="mb-3">
-            {editingId ? "แก้ไขสินค้า" : "เพิ่มสินค้าใหม่"}
-          </h4>
+          <h4>{editingId ? "แก้ไขสินค้า" : "เพิ่มสินค้า"}</h4>
 
           <form onSubmit={handleSubmit}>
             <div className="row g-3">
+
               <div className="col-md-4">
-                <label className="form-label">ชื่อสินค้า</label>
                 <input
-                  type="text"
                   className="form-control"
+                  placeholder="ชื่อสินค้า"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="ชื่อสินค้า"
                 />
               </div>
 
               <div className="col-md-2">
-                <label className="form-label">ราคา</label>
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="ราคา"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  placeholder="0"
                 />
               </div>
 
               <div className="col-md-2">
-                <label className="form-label">สต๊อก</label>
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="สต๊อก"
                   name="stock"
                   value={formData.stock}
                   onChange={handleChange}
-                  placeholder="0"
                 />
               </div>
 
               <div className="col-md-4">
-                <label className="form-label">รูปภาพ (URL)</label>
                 <input
-                  type="text"
                   className="form-control"
+                  placeholder="URL รูป"
                   name="image"
                   value={formData.image}
                   onChange={handleChange}
-                  placeholder="https://..."
                 />
               </div>
+
+              {/* 🔥 Preview รูป */}
+              {formData.image && (
+                <div className="col-12">
+                  <img
+                    src={formData.image}
+                    alt="preview"
+                    style={{ width: 120, borderRadius: 8 }}
+                  />
+                </div>
+              )}
             </div>
 
-            <div className="d-flex gap-2 mt-4">
-              <button type="submit" className="btn btn-success">
-                {editingId ? "บันทึกการแก้ไข" : "เพิ่มสินค้า"}
+            <div className="mt-3">
+              <button
+                className="btn btn-success"
+                disabled={submitting}
+              >
+                {submitting
+                  ? "กำลังบันทึก..."
+                  : editingId
+                  ? "บันทึก"
+                  : "เพิ่มสินค้า"}
               </button>
 
               {editingId && (
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-secondary ms-2"
                   onClick={resetForm}
                 >
                   ยกเลิก
@@ -200,71 +220,63 @@ function AdminProductsPage() {
         </div>
       </div>
 
-      <div className="card shadow-sm border-0">
+      {/* TABLE */}
+      <div className="card">
         <div className="card-body">
-          <h4 className="mb-3">รายการสินค้า</h4>
-
           {loading ? (
-            <p className="mb-0">กำลังโหลดสินค้า...</p>
+            <p>กำลังโหลด...</p>
           ) : products.length === 0 ? (
-            <p className="mb-0">ยังไม่มีสินค้าในระบบ</p>
+            <p>ไม่มีสินค้า</p>
           ) : (
-            <div className="table-responsive">
-              <table className="table align-middle">
-                <thead className="table-light">
-                  <tr>
-                    <th>ID</th>
-                    <th>รูป</th>
-                    <th>ชื่อสินค้า</th>
-                    <th>ราคา</th>
-                    <th>สต๊อก</th>
-                    <th>จัดการ</th>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>รูป</th>
+                  <th>ชื่อ</th>
+                  <th>ราคา</th>
+                  <th>สต๊อก</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {products.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td>
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          style={{ width: 50, borderRadius: 6 }}
+                        />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                    <td>{p.name}</td>
+                    <td>{p.price}</td>
+                    <td>{p.stock}</td>
+
+                    <td>
+                      <button
+                        className="btn btn-sm btn-primary me-2"
+                        onClick={() => handleEdit(p)}
+                      >
+                        แก้ไข
+                      </button>
+
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(p.id)}
+                      >
+                        ลบ
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product.id}>
-                      <td>{product.id}</td>
-                      <td>
-                        {product.image ? (
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            style={{
-                              width: "60px",
-                              height: "60px",
-                              objectFit: "cover",
-                              borderRadius: "8px",
-                            }}
-                          />
-                        ) : (
-                          <span className="text-muted">ไม่มีรูป</span>
-                        )}
-                      </td>
-                      <td>{product.name}</td>
-                      <td>{product.price} บาท</td>
-                      <td>{product.stock}</td>
-                      <td>
-                        <div className="d-flex gap-2">
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() => handleEdit(product)}
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(product.id)}
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       </div>

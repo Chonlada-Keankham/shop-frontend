@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { registerUser } from "../api/authApi";
@@ -7,6 +8,8 @@ import "../styles/auth.css";
 
 function RegisterPage() {
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -27,11 +30,32 @@ function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.warning("กรอกข้อมูลให้ครบ");
+      return;
+    }
+
     try {
       await registerUser(formData);
+
+      toast.success("สมัครสมาชิกสำเร็จ 🎉");
+
+      // ✅ reset form
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        address: "",
+      });
+
       navigate("/login");
     } catch (error) {
       console.error("Register failed:", error);
+
+      toast.error(
+        error.response?.data?.message || "สมัครสมาชิกไม่สำเร็จ"
+      );
     }
   };
 
@@ -42,17 +66,17 @@ function RegisterPage() {
       <div className="container auth-page">
         <div className="auth-wrapper">
           <div className="row justify-content-center align-items-stretch w-100 g-4">
+            
+            {/* FORM */}
             <div className="col-lg-6">
               <div className="auth-card h-100">
                 <div className="card-body">
                   <span className="auth-brand-badge">Create account</span>
                   <h1 className="auth-title">สมัครสมาชิก</h1>
-                  <p className="auth-subtitle">
-                    สร้างบัญชีเพื่อเริ่มสั่งซื้อสินค้า เพิ่มสินค้าเข้าตะกร้า
-                    และติดตามคำสั่งซื้อได้อย่างสะดวก
-                  </p>
 
                   <form onSubmit={handleRegister}>
+                    
+                    {/* NAME */}
                     <div className="mb-3">
                       <label className="form-label auth-label">ชื่อ</label>
                       <input
@@ -65,6 +89,7 @@ function RegisterPage() {
                       />
                     </div>
 
+                    {/* EMAIL */}
                     <div className="mb-3">
                       <label className="form-label auth-label">อีเมล</label>
                       <input
@@ -77,18 +102,31 @@ function RegisterPage() {
                       />
                     </div>
 
+                    {/* PASSWORD + EYE */}
                     <div className="mb-3">
                       <label className="form-label auth-label">รหัสผ่าน</label>
-                      <input
-                        type="password"
-                        className="form-control auth-input"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="กรอกรหัสผ่าน"
-                      />
+
+                      <div className="input-group">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-control auth-input"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="กรอกรหัสผ่าน"
+                        />
+
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? "🙈" : "👁"}
+                        </button>
+                      </div>
                     </div>
 
+                    {/* PHONE */}
                     <div className="mb-3">
                       <label className="form-label auth-label">เบอร์โทร</label>
                       <input
@@ -101,6 +139,7 @@ function RegisterPage() {
                       />
                     </div>
 
+                    {/* ADDRESS */}
                     <div className="mb-3">
                       <label className="form-label auth-label">ที่อยู่</label>
                       <textarea
@@ -121,28 +160,31 @@ function RegisterPage() {
                     </button>
                   </form>
 
-                  <p className="auth-footer-text">
+                  <p className="auth-footer-text mt-3">
                     มีบัญชีแล้ว? <Link to="/login">เข้าสู่ระบบ</Link>
                   </p>
                 </div>
               </div>
             </div>
 
+            {/* SIDE */}
             <div className="col-lg-4">
               <div className="auth-side-note h-100">
-                <div className="auth-side-note-title">Join the community</div>
+                <div className="auth-side-note-title">
+                  Join the community
+                </div>
                 <p>
-                  เมื่อสมัครสมาชิกแล้ว คุณจะสามารถสั่งซื้อสินค้าได้ง่ายขึ้น
-                  และติดตามสถานะคำสั่งซื้อได้จากบัญชีของคุณ
+                  สมัครแล้วสามารถสั่งซื้อสินค้า และติดตามคำสั่งซื้อได้ทันที
                 </p>
 
                 <ul className="auth-feature-list">
-                  <li>จัดเก็บข้อมูลผู้ใช้สำหรับการสั่งซื้อครั้งถัดไป</li>
-                  <li>เข้าถึงตะกร้าสินค้าและประวัติคำสั่งซื้อได้สะดวก</li>
-                  <li>ใช้งานระบบร้านค้าได้ครบทุกฟังก์ชัน</li>
+                  <li>บันทึกข้อมูลผู้ใช้</li>
+                  <li>ดูประวัติคำสั่งซื้อ</li>
+                  <li>ใช้งานระบบได้ครบ</li>
                 </ul>
               </div>
             </div>
+
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../api/axios";
@@ -18,7 +18,10 @@ import { getUser, isLoggedIn } from "../utils/auth";
 function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const navigate = useNavigate();
+  const itemsPerPage = 6;
 
   useEffect(() => {
     fetchProducts();
@@ -27,7 +30,9 @@ function HomePage() {
   const fetchProducts = async () => {
     try {
       const res = await api.get("/products");
-      setProducts(Array.isArray(res.data) ? res.data : res.data.data || []);
+      const productList = Array.isArray(res.data) ? res.data : res.data.data || [];
+      setProducts(productList);
+      setCurrentPage(1);
     } catch (error) {
       console.error("Failed to fetch products:", error);
       toast.error("โหลดสินค้าไม่สำเร็จ");
@@ -35,6 +40,13 @@ function HomePage() {
       setLoading(false);
     }
   };
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  const currentProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return products.slice(startIndex, startIndex + itemsPerPage);
+  }, [products, currentPage]);
 
   const handleAddToCart = async (product) => {
     try {
@@ -48,6 +60,13 @@ function HomePage() {
       if (!user || !user.id) {
         console.error("User data invalid:", user);
         navigate("/login");
+        return;
+      }
+
+      // ✅ กัน admin ไม่ให้ใช้ flow ตะกร้า
+      if (user.role === "admin") {
+        toast.info("บัญชีแอดมินไม่สามารถสั่งซื้อสินค้าได้");
+        navigate("/admin/products");
         return;
       }
 
@@ -66,6 +85,12 @@ function HomePage() {
         }
       }
 
+      console.log("ADD TO CART DATA:", {
+        cartId,
+        productId: product.id,
+        quantity: 1,
+      });
+
       await addItemToCart(cartId, product.id, 1);
       toast.success(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
     } catch (error) {
@@ -73,7 +98,10 @@ function HomePage() {
         "Add to cart failed:",
         error.response?.data || error.message
       );
-      toast.error("เพิ่มสินค้าลงตะกร้าไม่สำเร็จ");
+
+      toast.error(
+        error.response?.data?.message || "เพิ่มสินค้าลงตะกร้าไม่สำเร็จ"
+      );
     }
   };
 
@@ -91,15 +119,51 @@ function HomePage() {
           ) : products.length === 0 ? (
             <p className="text-center">ยังไม่มีสินค้าในระบบ</p>
           ) : (
-            <div className="row">
-              {products.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  item={item}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
+            <>
+              <div className="row">
+                {currentProducts.map((item) => (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                  >
+                    ก่อนหน้า
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                      key={index + 1}
+                      className={`btn btn-sm ${
+                        currentPage === index + 1
+                          ? "btn-success"
+                          : "btn-outline-success"
+                      }`}
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                  >
+                    ถัดไป
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
