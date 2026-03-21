@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { loginUser } from "../api/authApi";
+import { isLoggedIn, getUser } from "../utils/auth";
 import "../styles/auth.css";
 
 function LoginPage() {
@@ -12,6 +13,19 @@ function LoginPage() {
     email: "",
     password: "",
   });
+
+  // ✅ ถ้าล็อกอินอยู่แล้ว → redirect ตาม role
+  useEffect(() => {
+    if (isLoggedIn()) {
+      const user = getUser();
+
+      if (user?.role === "admin") {
+        navigate("/admin/products");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,16 +38,33 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (!formData.email || !formData.password) {
+      alert("กรอกข้อมูลให้ครบ");
+      return;
+    }
+
     try {
       const res = await loginUser(formData);
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const token = res.data.token;
+      const user = res.data.user;
+
+      // ✅ เก็บข้อมูล
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // sync navbar
       window.dispatchEvent(new Event("authChanged"));
 
-      navigate("/");
+      // ✅ แยกตาม role
+      if (user.role === "admin") {
+        navigate("/admin/products");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error.response?.data || error.message);
+      alert("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
     }
   };
 
@@ -49,9 +80,9 @@ function LoginPage() {
                 <div className="card-body">
                   <span className="auth-brand-badge">Welcome back</span>
                   <h1 className="auth-title">เข้าสู่ระบบ</h1>
+
                   <p className="auth-subtitle">
-                    เข้าสู่ระบบเพื่อเพิ่มสินค้าเข้าตะกร้า ตรวจสอบคำสั่งซื้อ
-                    และใช้งาน Cactus House ได้อย่างเต็มรูปแบบ
+                    เข้าสู่ระบบเพื่อใช้งานระบบ
                   </p>
 
                   <form onSubmit={handleLogin}>
@@ -97,15 +128,15 @@ function LoginPage() {
             <div className="col-lg-5">
               <div className="auth-side-note h-100">
                 <div className="auth-side-note-title">Cactus House</div>
+
                 <p>
-                  ร้านขายแคคตัสและไม้อวบน้ำออนไลน์ที่ออกแบบมาให้เรียบง่าย
-                  ใช้งานสะดวก และช่วยให้ลูกค้าสั่งซื้อสินค้าได้อย่างรวดเร็ว
+                  ระบบร้านค้าออนไลน์ พร้อมระบบหลังบ้านสำหรับผู้ดูแลสินค้า
                 </p>
 
                 <ul className="auth-feature-list">
-                  <li>เพิ่มสินค้าเข้าตะกร้าได้ทันทีหลังเข้าสู่ระบบ</li>
-                  <li>ตรวจสอบประวัติคำสั่งซื้อย้อนหลังได้</li>
-                  <li>ดูรายละเอียดคำสั่งซื้อและยอดชำระได้ครบถ้วน</li>
+                  <li>ลูกค้า: สั่งซื้อสินค้า</li>
+                  <li>แอดมิน: จัดการสินค้า</li>
+                  <li>ใช้งานง่าย รองรับทุกอุปกรณ์</li>
                 </ul>
               </div>
             </div>

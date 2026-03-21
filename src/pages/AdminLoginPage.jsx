@@ -23,61 +23,54 @@ function AdminLoginPage() {
 
     try {
       const res = await loginUser(formData);
+
       const user = res.data.user;
       const token = res.data.token;
 
+      // ❌ กัน user ธรรมดา
       if (user.role !== "admin") {
-        alert("บัญชีนี้ไม่มีสิทธิ์เข้าใช้งานหลังบ้าน");
+        alert("คุณไม่ใช่แอดมิน");
         return;
       }
 
+      // ✅ เก็บข้อมูล
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       window.dispatchEvent(new Event("authChanged"));
 
+      // ✅ ไปหลังบ้าน
       navigate("/admin/products");
     } catch (error) {
-      console.error("Admin login failed:", error);
+      console.error("Admin login failed:", error.response?.data || error.message);
       alert("เข้าสู่ระบบไม่สำเร็จ");
     }
   };
 
   return (
-    <div className="container py-5" style={{ maxWidth: "480px" }}>
-      <div className="card shadow-sm border-0">
-        <div className="card-body p-4">
-          <h2 className="mb-3">Admin Login</h2>
-          <p className="text-muted">เข้าสู่ระบบสำหรับผู้ดูแลระบบ</p>
+    <div className="container mt-5">
+      <h2>Admin Login</h2>
 
-          <form onSubmit={handleLogin}>
-            <div className="mb-3">
-              <label className="form-label">อีเมล</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          name="email"
+          className="form-control mb-3"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
 
-            <div className="mb-4">
-              <label className="form-label">รหัสผ่าน</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
+        <input
+          type="password"
+          name="password"
+          className="form-control mb-3"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
 
-            <button type="submit" className="btn btn-dark w-100">
-              เข้าสู่ระบบ
-            </button>
-          </form>
-        </div>
-      </div>
+        <button className="btn btn-primary w-100">Login</button>
+      </form>
     </div>
   );
 }

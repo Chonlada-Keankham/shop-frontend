@@ -8,6 +8,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import AdminOrderDetailPage from "./pages/AdminOrderDetailPage";
 import AdminLayout from "./components/AdminLayout";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
@@ -37,8 +39,20 @@ function App() {
         >
           <Route path="products" element={<AdminProductsPage />} />
         </Route>
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route path="products" element={<AdminProductsPage />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
+          <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
+        </Route>
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 

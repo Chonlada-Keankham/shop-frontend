@@ -28,6 +28,9 @@ function AdminLayout() {
           <Link className="btn btn-outline-light text-start" to="/admin/products">
             จัดการสินค้า
           </Link>
+          <Link className="btn btn-outline-light text-start" to="/admin/orders">
+            จัดการคำสั่งซื้อ
+          </Link>
         </nav>
 
         <hr className="border-secondary my-4" />

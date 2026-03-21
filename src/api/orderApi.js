@@ -25,6 +25,19 @@ export const getOrderItemsByOrderId = (orderId) => {
   return axios.get(`/order-items/order/${orderId}`, getAuthHeader());
 };
 
-export const updateOrderStatus = (id, status) => {
-  return axios.patch(`/orders/${id}/status`, { status }, getAuthHeader());
+// ADMIN
+export const getAllOrdersAdmin = () => {
+  return axios.get("/orders/admin/all", getAuthHeader());
+};
+
+export const getOrderByIdAdmin = (id) => {
+  return axios.get(`/orders/admin/${id}`, getAuthHeader());
+};
+
+export const updateOrderStatusAdmin = (id, status) => {
+  return axios.patch(
+    `/orders/admin/${id}/status`,
+    { status },
+    getAuthHeader()
+  );
 };

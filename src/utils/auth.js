@@ -1,14 +1,13 @@
-export const getUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
-
-export const getToken = () => {
-  return localStorage.getItem("token");
-};
-
 export const isLoggedIn = () => {
   return !!localStorage.getItem("token");
+};
+
+export const getUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user"));
+  } catch (error) {
+    return null;
+  }
 };
 
 export const logout = () => {

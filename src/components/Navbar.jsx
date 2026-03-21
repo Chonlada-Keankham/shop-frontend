@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../styles/navbar.css";
-import { isLoggedIn, logout } from "../utils/auth";
+import { isLoggedIn, logout, getUser } from "../utils/auth";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+  const [user, setUser] = useState(getUser());
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,6 +18,7 @@ function Navbar() {
 
     const syncAuthState = () => {
       setLoggedIn(isLoggedIn());
+      setUser(getUser());
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,6 +38,8 @@ function Navbar() {
     navigate("/");
   };
 
+  const isAdmin = user?.role === "admin";
+
   return (
     <nav
       className={`navbar navbar-expand-lg cactus-navbar fixed-top ${
@@ -42,7 +47,7 @@ function Navbar() {
       }`}
     >
       <div className="container">
-        <Link className="navbar-brand brand-logo" to="/">
+        <Link className="navbar-brand brand-logo" to={isAdmin ? "/admin/products" : "/"}>
           <span className="brand-icon">🌵</span>
           <span className="brand-text">Cactus House</span>
         </Link>
@@ -61,7 +66,7 @@ function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-            {loggedIn && (
+            {loggedIn && !isAdmin && (
               <>
                 <li className="nav-item">
                   <button
@@ -85,6 +90,18 @@ function Navbar() {
               </>
             )}
 
+            {loggedIn && isAdmin && (
+              <li className="nav-item">
+                <button
+                  type="button"
+                  className="nav-link btn btn-link nav-btn-link"
+                  onClick={() => navigate("/admin/products")}
+                >
+                  หลังบ้าน
+                </button>
+              </li>
+            )}
+
             {!loggedIn ? (
               <>
                 <li className="nav-item">
@@ -97,6 +114,7 @@ function Navbar() {
                     เข้าสู่ระบบ
                   </Link>
                 </li>
+
                 <li className="nav-item">
                   <Link
                     className="btn btn-light btn-sm nav-register-btn"

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getOrderById, getOrderItemsByOrderId } from "../api/orderApi";
 import "../styles/order.css";
+import { isLoggedIn } from "../utils/auth";
 
 function OrderDetailPage() {
   const { orderId } = useParams();
+  const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
@@ -20,6 +22,11 @@ function OrderDetailPage() {
   };
 
   useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate("/login");
+      return;
+    }
+
     fetchOrderDetail();
   }, [orderId]);
 
@@ -27,13 +34,27 @@ function OrderDetailPage() {
     try {
       setLoading(true);
 
+      // ดึง order ก่อน
       const orderRes = await getOrderById(orderId);
-      setOrder(orderRes.data.data || null);
+      const orderData = orderRes?.data?.data || null;
+      setOrder(orderData);
 
-      const itemsRes = await getOrderItemsByOrderId(orderId);
-      setOrderItems(itemsRes.data.data || []);
+      // ดึง order items แยก ถ้าพังก็ยังให้แสดง order
+      try {
+        const itemsRes = await getOrderItemsByOrderId(orderId);
+        setOrderItems(itemsRes?.data?.data || []);
+      } catch (itemsError) {
+        console.error(
+          "Failed to fetch order items:",
+          itemsError.response?.data || itemsError.message
+        );
+        setOrderItems([]);
+      }
     } catch (error) {
-      console.error("Failed to fetch order detail:", error);
+      console.error(
+        "Failed to fetch order detail:",
+        error.response?.data || error.message
+      );
       setOrder(null);
       setOrderItems([]);
     } finally {
@@ -95,7 +116,9 @@ function OrderDetailPage() {
                     <div className="store-info-title">Order Summary</div>
                     <div>
                       <span className="order-meta-label">รหัสคำสั่งซื้อ: </span>
-                      <span className="order-meta-value">{order.order_code}</span>
+                      <span className="order-meta-value">
+                        {order.order_code || `ORD-${order.id}`}
+                      </span>
                     </div>
                     <div className="mt-2">
                       <span className="order-meta-label">สถานะ: </span>
@@ -125,7 +148,9 @@ function OrderDetailPage() {
 
                   <div style={{ gridColumn: "1 / -1" }}>
                     <div className="order-meta-label">ที่อยู่จัดส่ง</div>
-                    <div className="order-meta-value">{order.customer_address}</div>
+                    <div className="order-meta-value">
+                      {order.customer_address}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -136,7 +161,7 @@ function OrderDetailPage() {
                 <h3 className="order-section-title">รายการสินค้า</h3>
 
                 {orderItems.length === 0 ? (
-                  <p className="mb-0">ไม่มีรายการสินค้า</p>
+                  <p className="mb-0">ไม่มีรายการสินค้า หรือไม่สามารถโหลดรายการสินค้าได้</p>
                 ) : (
                   <div className="table-responsive">
                     <table className="table order-table align-middle">
@@ -151,7 +176,9 @@ function OrderDetailPage() {
                       <tbody>
                         {orderItems.map((item) => (
                           <tr key={item.id}>
-                            <td className="fw-semibold">{item.product_name}</td>
+                            <td className="fw-semibold">
+                              {item.product_name || `Product #${item.product_id}`}
+                            </td>
                             <td>{item.price} บาท</td>
                             <td>{item.quantity}</td>
                             <td>{item.subtotal} บาท</td>
@@ -175,11 +202,11 @@ function OrderDetailPage() {
                   </div>
                   <div className="order-summary-row">
                     <span>ส่วนลด</span>
-                    <span>{order.discount} บาท</span>
+                    <span>{order.discount || 0} บาท</span>
                   </div>
                   <div className="order-summary-row">
                     <span>VAT</span>
-                    <span>{order.vat} บาท</span>
+                    <span>{order.vat || 0} บาท</span>
                   </div>
                   <div className="order-summary-row total">
                     <span>ยอดสุทธิ</span>
