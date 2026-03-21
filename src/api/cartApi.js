@@ -9,14 +9,18 @@ const getAuthHeader = () => {
   };
 };
 
-export const getActiveCart = () => {
-  return axios.get("/carts/user/active", getAuthHeader());
+export const createCart = (user_id) => {
+  return axios.post("/carts", { user_id }, getAuthHeader());
 };
 
-export const addItemToCart = (product_id, quantity = 1) => {
+export const getActiveCartByUser = (userId) => {
+  return axios.get(`/carts/user/${userId}/active`, getAuthHeader());
+};
+
+export const addItemToCart = (cart_id, product_id, quantity = 1) => {
   return axios.post(
     "/cart-items",
-    { product_id, quantity },
+    { cart_id, product_id, quantity },
     getAuthHeader()
   );
 };
@@ -35,4 +39,8 @@ export const deleteCartItem = (id) => {
 
 export const getCartTotalByCartId = (cartId) => {
   return axios.get(`/cart-items/cart/${cartId}/total`, getAuthHeader());
+};
+
+export const updateCartStatus = (cartId, status) => {
+  return axios.put(`/carts/${cartId}/status`, { status }, getAuthHeader());
 };

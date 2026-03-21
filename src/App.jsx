@@ -15,6 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* PUBLIC */}
         <Route path="/" element={<HomePage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
@@ -23,7 +24,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
+        {/* ADMIN */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
+
         <Route
           path="/admin"
           element={
@@ -35,17 +38,6 @@ function App() {
           <Route path="products" element={<AdminProductsPage />} />
         </Route>
       </Routes>
-      <Route path="/admin/login" element={<AdminLoginPage />} />
-      <Route
-        path="/admin"
-        element={
-          <AdminProtectedRoute>
-            <AdminLayout />
-          </AdminProtectedRoute>
-        }
-      >
-        <Route path="products" element={<AdminProductsPage />} />
-      </Route>
     </BrowserRouter>
   );
 }

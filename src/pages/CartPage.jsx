@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
-  getActiveCart,
+  getActiveCartByUser,
   getCartItemsByCartId,
   updateCartItemQuantity,
   deleteCartItem,
@@ -40,8 +40,7 @@ function CartPage() {
         return;
       }
 
-      // ✅ ใช้ token-based API
-      const cartRes = await getActiveCart();
+      const cartRes = await getActiveCartByUser(user.id);
       const activeCartId = cartRes.data.data.id;
 
       setCartId(activeCartId);
