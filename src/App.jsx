@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import HomePage from "./pages/HomePage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -17,7 +20,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* PUBLIC */}
         <Route path="/" element={<HomePage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
@@ -26,19 +28,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* ADMIN */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
-
-        <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute>
-              <AdminLayout />
-            </AdminProtectedRoute>
-          }
-        >
-          <Route path="products" element={<AdminProductsPage />} />
-        </Route>
         <Route
           path="/admin"
           element={
@@ -52,7 +42,17 @@ function App() {
           <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
         </Route>
       </Routes>
-    </BrowserRouter >
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+    </BrowserRouter>
   );
 }
 

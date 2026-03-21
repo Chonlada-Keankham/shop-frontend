@@ -23,10 +23,21 @@ function AdminOrderDetailPage() {
       const orderRes = await getOrderByIdAdmin(orderId);
       setOrder(orderRes.data.data || null);
 
-      const itemsRes = await getOrderItemsByOrderId(orderId);
-      setItems(itemsRes.data.data || []);
+      try {
+        const itemsRes = await getOrderItemsByOrderId(orderId);
+        setItems(itemsRes.data.data || []);
+      } catch (itemsError) {
+        console.error(
+          "Failed to fetch order items:",
+          itemsError.response?.data || itemsError.message
+        );
+        setItems([]);
+      }
     } catch (error) {
-      console.error("Failed to fetch admin order detail:", error);
+      console.error(
+        "Failed to fetch admin order detail:",
+        error.response?.data || error.message
+      );
       setOrder(null);
       setItems([]);
     } finally {
@@ -39,7 +50,9 @@ function AdminOrderDetailPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="mb-1">รายละเอียดคำสั่งซื้อ</h2>
-          <p className="text-muted mb-0">ตรวจสอบข้อมูลคำสั่งซื้อและรายการสินค้า</p>
+          <p className="text-muted mb-0">
+            ตรวจสอบข้อมูลคำสั่งซื้อและรายการสินค้า
+          </p>
         </div>
 
         <Link to="/admin/orders" className="btn btn-outline-secondary">
@@ -56,12 +69,25 @@ function AdminOrderDetailPage() {
           <div className="card shadow-sm border-0 mb-4">
             <div className="card-body">
               <h5 className="mb-3">ข้อมูลคำสั่งซื้อ</h5>
-              <p className="mb-1"><strong>รหัสคำสั่งซื้อ:</strong> {order.order_code}</p>
-              <p className="mb-1"><strong>ชื่อผู้รับ:</strong> {order.customer_name}</p>
-              <p className="mb-1"><strong>ที่อยู่:</strong> {order.customer_address}</p>
-              <p className="mb-1"><strong>เบอร์โทร:</strong> {order.customer_phone}</p>
-              <p className="mb-1"><strong>สถานะ:</strong> {order.status}</p>
-              <p className="mb-0"><strong>ยอดรวม:</strong> {order.total} บาท</p>
+              <p className="mb-1">
+                <strong>รหัสคำสั่งซื้อ:</strong>{" "}
+                {order.order_code || `ORD-${order.id}`}
+              </p>
+              <p className="mb-1">
+                <strong>ชื่อผู้รับ:</strong> {order.customer_name}
+              </p>
+              <p className="mb-1">
+                <strong>ที่อยู่:</strong> {order.customer_address}
+              </p>
+              <p className="mb-1">
+                <strong>เบอร์โทร:</strong> {order.customer_phone}
+              </p>
+              <p className="mb-1">
+                <strong>สถานะ:</strong> {order.status}
+              </p>
+              <p className="mb-0">
+                <strong>ยอดรวม:</strong> {order.total} บาท
+              </p>
             </div>
           </div>
 
@@ -85,7 +111,7 @@ function AdminOrderDetailPage() {
                     <tbody>
                       {items.map((item) => (
                         <tr key={item.id}>
-                          <td>{item.product_name}</td>
+                          <td>{item.product_name || `Product #${item.product_id}`}</td>
                           <td>{item.price} บาท</td>
                           <td>{item.quantity}</td>
                           <td>{item.subtotal} บาท</td>

@@ -1,78 +1,50 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/authApi";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
-function AdminLoginPage() {
+function AdminLayout() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await loginUser(formData);
-
-      const user = res.data.user;
-      const token = res.data.token;
-
-      // ❌ กัน user ธรรมดา
-      if (user.role !== "admin") {
-        alert("คุณไม่ใช่แอดมิน");
-        return;
-      }
-
-      // ✅ เก็บข้อมูล
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      window.dispatchEvent(new Event("authChanged"));
-
-      // ✅ ไปหลังบ้าน
-      navigate("/admin/products");
-    } catch (error) {
-      console.error("Admin login failed:", error.response?.data || error.message);
-      alert("เข้าสู่ระบบไม่สำเร็จ");
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("authChanged"));
+    navigate("/");
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Admin Login</h2>
+    <div className="d-flex min-vh-100">
+      <aside
+        className="bg-dark text-white p-3"
+        style={{ width: "260px", minHeight: "100vh" }}
+      >
+        <h4 className="mb-4">Admin Dashboard</h4>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          name="email"
-          className="form-control mb-3"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+        <div className="mb-3">
+          <div className="small text-secondary">Signed in as</div>
+          <div className="fw-bold">{user?.name || "Admin"}</div>
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          className="form-control mb-3"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+        <nav className="nav flex-column gap-2">
+          <Link className="btn btn-outline-light text-start" to="/admin/products">
+            จัดการสินค้า
+          </Link>
+          <Link className="btn btn-outline-light text-start" to="/admin/orders">
+            จัดการคำสั่งซื้อ
+          </Link>
+        </nav>
 
-        <button className="btn btn-primary w-100">Login</button>
-      </form>
+        <hr className="border-secondary my-4" />
+
+        <button className="btn btn-danger w-100" onClick={handleLogout}>
+          ออกจากระบบ
+        </button>
+      </aside>
+
+      <main className="flex-grow-1 bg-light p-4">
+        <Outlet />
+      </main>
     </div>
   );
 }
 
-export default AdminLoginPage;
+export default AdminLayout;

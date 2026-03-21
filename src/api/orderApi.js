@@ -31,7 +31,7 @@ export const getAllOrdersAdmin = () => {
 };
 
 export const getOrderByIdAdmin = (id) => {
-  return axios.get(`/orders/admin/${id}`, getAuthHeader());
+  return axios.get(`/orders/${id}`, getAuthHeader());
 };
 
 export const updateOrderStatusAdmin = (id, status) => {

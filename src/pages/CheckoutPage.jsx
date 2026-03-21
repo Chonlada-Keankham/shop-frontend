@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
@@ -65,6 +67,9 @@ function CheckoutPage() {
         "Failed to fetch checkout data:",
         error.response?.data || error.message
       );
+
+      toast.error("โหลดข้อมูลตะกร้าไม่สำเร็จ");
+
       setCartItems([]);
       setTotalPrice(0);
       setCartId(null);
@@ -89,12 +94,12 @@ function CheckoutPage() {
       !formData.customer_address ||
       !formData.customer_phone
     ) {
-      alert("กรอกข้อมูลให้ครบ");
+      toast.warning("กรอกข้อมูลให้ครบ");
       return;
     }
 
     if (!cartId || cartItems.length === 0) {
-      alert("ไม่มีสินค้าในตะกร้า");
+      toast.warning("ไม่มีสินค้าในตะกร้า");
       return;
     }
 
@@ -105,14 +110,16 @@ function CheckoutPage() {
         customer_phone: formData.customer_phone,
       });
 
-      alert("สั่งซื้อสำเร็จ");
+      toast.success("สั่งซื้อสำเร็จ 🎉");
+
       navigate("/orders");
     } catch (error) {
       console.error(
         "Checkout failed:",
         error.response?.data || error.message
       );
-      alert("สั่งซื้อไม่สำเร็จ");
+
+      toast.error("สั่งซื้อไม่สำเร็จ");
     }
   };
 
@@ -146,7 +153,6 @@ function CheckoutPage() {
                         name="customer_name"
                         value={formData.customer_name}
                         onChange={handleChange}
-                        placeholder="กรอกชื่อผู้รับ"
                       />
                     </div>
 
@@ -158,7 +164,6 @@ function CheckoutPage() {
                         name="customer_address"
                         value={formData.customer_address}
                         onChange={handleChange}
-                        placeholder="กรอกที่อยู่จัดส่ง"
                       ></textarea>
                     </div>
 
@@ -170,7 +175,6 @@ function CheckoutPage() {
                         name="customer_phone"
                         value={formData.customer_phone}
                         onChange={handleChange}
-                        placeholder="กรอกเบอร์โทร"
                       />
                     </div>
 
@@ -208,16 +212,14 @@ function CheckoutPage() {
                       <span>{totalPrice.toFixed(2)} บาท</span>
                     </div>
                     <div className="d-flex justify-content-between mb-2">
-                      <span>ส่วนลด</span>
-                      <span>0.00 บาท</span>
-                    </div>
-                    <div className="d-flex justify-content-between mb-2">
                       <span>VAT 7%</span>
                       <span>{(totalPrice * 0.07).toFixed(2)} บาท</span>
                     </div>
                     <div className="d-flex justify-content-between fw-bold fs-5 mt-3">
                       <span>ยอดสุทธิ</span>
-                      <span>{(totalPrice + totalPrice * 0.07).toFixed(2)} บาท</span>
+                      <span>
+                        {(totalPrice + totalPrice * 0.07).toFixed(2)} บาท
+                      </span>
                     </div>
                   </div>
                 </div>

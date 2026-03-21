@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../api/axios";
 import {
   getActiveCartByUser,
@@ -29,6 +30,7 @@ function HomePage() {
       setProducts(Array.isArray(res.data) ? res.data : res.data.data || []);
     } catch (error) {
       console.error("Failed to fetch products:", error);
+      toast.error("โหลดสินค้าไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
@@ -65,13 +67,13 @@ function HomePage() {
       }
 
       await addItemToCart(cartId, product.id, 1);
-      alert(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
+      toast.success(`เพิ่ม ${product.name} ลงตะกร้าเรียบร้อยแล้ว`);
     } catch (error) {
       console.error(
         "Add to cart failed:",
         error.response?.data || error.message
       );
-      alert("เพิ่มสินค้าลงตะกร้าไม่สำเร็จ");
+      toast.error("เพิ่มสินค้าลงตะกร้าไม่สำเร็จ");
     }
   };
 
