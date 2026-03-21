@@ -6,9 +6,12 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminProductsPage from "./pages/AdminProductsPage";
+import AdminLayout from "./components/AdminLayout";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 function App() {
-  
   return (
     <BrowserRouter>
       <Routes>
@@ -19,10 +22,21 @@ function App() {
         <Route path="/orders/:orderId" element={<OrderDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route path="products" element={<AdminProductsPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
-  
 }
 
 export default App;
