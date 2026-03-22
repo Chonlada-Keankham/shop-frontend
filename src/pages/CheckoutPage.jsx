@@ -105,24 +105,19 @@ function CheckoutPage() {
 
     try {
       await checkout({
+        cart_id: cartId,
         customer_name: formData.customer_name,
         customer_address: formData.customer_address,
         customer_phone: formData.customer_phone,
       });
 
       toast.success("สั่งซื้อสำเร็จ 🎉");
-
       navigate("/orders");
     } catch (error) {
-      console.error(
-        "Checkout failed:",
-        error.response?.data || error.message
-      );
-
-      toast.error("สั่งซื้อไม่สำเร็จ");
+      console.error("Checkout failed:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "สั่งซื้อไม่สำเร็จ");
     }
   };
-
   return (
     <>
       <Navbar />
