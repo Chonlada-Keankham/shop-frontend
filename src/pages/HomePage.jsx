@@ -30,12 +30,19 @@ function HomePage() {
   const fetchProducts = async () => {
     try {
       const res = await api.get("/products");
-      const productList = Array.isArray(res.data) ? res.data : res.data.data || [];
-      setProducts(productList);
+
+      console.log("API RESPONSE:", res.data);
+
+      if (!Array.isArray(res.data)) {
+        throw new Error("Products response is not an array");
+      }
+
+      setProducts(res.data);
       setCurrentPage(1);
     } catch (error) {
       console.error("Failed to fetch products:", error);
       toast.error("โหลดสินค้าไม่สำเร็จ");
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -44,6 +51,8 @@ function HomePage() {
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
   const currentProducts = useMemo(() => {
+    if (!Array.isArray(products)) return [];
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     return products.slice(startIndex, startIndex + itemsPerPage);
   }, [products, currentPage]);
@@ -63,7 +72,6 @@ function HomePage() {
         return;
       }
 
-      // ✅ กัน admin ไม่ให้ใช้ flow ตะกร้า
       if (user.role === "admin") {
         toast.info("บัญชีแอดมินไม่สามารถสั่งซื้อสินค้าได้");
         navigate("/admin/products");
@@ -116,7 +124,7 @@ function HomePage() {
 
           {loading ? (
             <p className="text-center">กำลังโหลดสินค้า...</p>
-          ) : products.length === 0 ? (
+          ) : !Array.isArray(products) || products.length === 0 ? (
             <p className="text-center">ยังไม่มีสินค้าในระบบ</p>
           ) : (
             <>
